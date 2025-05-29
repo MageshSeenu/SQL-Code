@@ -1,0 +1,27 @@
+-- 1. Average salary per department (only departments with avg salary > 70000)
+SELECT department, AVG(salary) AS average_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 70000;
+
+-- 2. Highest paid employee
+SELECT department, name
+FROM employees
+ORDER BY salary DESC
+LIMIT 1;
+
+-- 3. Maximum age in each department
+SELECT department, MAX(age) AS maximum_age
+FROM employees
+GROUP BY department;
+
+-- 4. Count of employees older than 30 in each department (corrected logic)
+SELECT department, COUNT(name) AS oldage
+FROM employees
+WHERE age > 30
+GROUP BY department;
+
+-- 5. Employees earning more than the average salary
+SELECT name
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
