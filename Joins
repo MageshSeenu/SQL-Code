@@ -1,0 +1,58 @@
+-- 6. LEFT JOIN - Employee and department names
+SELECT e.name AS employee_name, d.name AS department_name
+FROM employees e
+LEFT JOIN departments d ON e.department_id = d.id;
+
+-- 7. Count of employees per department (RIGHT JOIN version)
+SELECT d.name AS department_name, COUNT(e.name) AS count_employee
+FROM employees e
+RIGHT JOIN departments d ON e.department_id = d.id
+GROUP BY d.name;
+
+-- 8. Departments with no employees
+SELECT d.name, e.name
+FROM employees e
+RIGHT JOIN departments d ON e.department_id = d.id
+WHERE e.name IS NULL;
+
+-- 9. Max salary employee per department (using subquery)
+SELECT d.name, e.name, e.salary
+FROM employees e
+JOIN (
+    SELECT department_id, MAX(salary) AS max_sal
+    FROM employees
+    GROUP BY department_id
+) m ON e.department_id = m.department_id AND e.salary = m.max_sal
+JOIN departments d ON e.department_id = d.id;
+
+-- 10. Min salary employee per department (with subquery)
+SELECT d.name, e.name, e.salary
+FROM employees e
+JOIN (
+    SELECT department_id, MIN(salary) AS minsal
+    FROM employees
+    GROUP BY department_id
+) m ON e.department_id = m.department_id AND e.salary = m.minsal
+JOIN departments d ON e.department_id = d.id;
+
+-- 11. Total salary per department
+SELECT d.name, SUM(e.salary) AS total_salary
+FROM employees e
+JOIN departments d ON e.department_id = d.id
+GROUP BY d.name;
+
+-- 12. Departments with only one employee
+SELECT e.name, e.department_id
+FROM employees e
+JOIN (
+    SELECT department_id, COUNT(name) AS only_person
+    FROM employees
+    GROUP BY department_id
+    HAVING only_person = 1
+) o ON e.department_id = o.department_id;
+
+-- 13. Count of employees per department (RIGHT JOIN version)
+SELECT d.name AS department_name, COUNT(e.id) AS employee_count
+FROM employees e
+RIGHT JOIN departments d ON e.department_id = d.id
+GROUP BY d.name;
