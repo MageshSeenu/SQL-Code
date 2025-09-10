@@ -1,0 +1,66 @@
+VIEW = a saved query in the database.			
+	CREATE VIEW active_customers AS		
+It’s like a template you can use anytime.	SELECT id, name, email		
+	FROM customers		
+Once created, anyone can query it multiple times, like a “virtual table.”	WHERE status = 'active';		
+			
+CTE (Common Table Expression) = a temporary helper for just one query.			
+	SELECT * FROM active_customers;		
+It exists only while that query runs.	SELECT COUNT(*) FROM active_customers;		
+			
+Once the query finishes, it disappears.			
+			
+			
+			
+1️⃣ Denormalization in a Database			
+			
+Definition:			
+Denormalization is the process of intentionally adding redundancy to a normalized database schema to improve performance, especially for read-heavy operations.			
+			
+Instead of storing customer_name only in the customers table, you might also store it in the orders table to avoid joining orders with customers every time you query sales reports.			
+			
+Nth highest salary			
+SELECT DISTINCT salary			
+FROM employees			
+ORDER BY salary DESC			
+LIMIT 1 OFFSET :N-1;			
+			
+Quick Comparison Table			
+			
+Feature	DROP TABLE	TRUNCATE TABLE	DELETE FROM table
+Removes table structure	✅ Yes	❌ No	❌ No
+Removes data	✅ All	✅ All	✅ All / conditional
+WHERE clause allowed	❌ No	❌ No	✅ Yes
+Can be rolled back	❌ Usually no	❌ Usually no	✅ Yes (in transaction)
+Speed	N/A (table gone)	Very fast	Slower (row by row)
+			
+-- Step 1: Create a temporary table with unique rows			
+CREATE TABLE temp_employees AS	create view is virtual table vs create table is actual table will be created in databsae		
+SELECT DISTINCT *			
+FROM employees;			
+			
+-- Step 2: Replace original table			
+TRUNCATE TABLE employees;			
+INSERT INTO employees			
+SELECT * FROM temp_employees;			
+			
+DROP TABLE temp_employees;			
+			
+			
+Concept	Definition / Rule	Example / Explanation	
+1NF (First Normal Form)	Each column contains atomic values; each row is unique	Bad: orders column has 101,102 Good: one row per order (`customer_id	
+2NF (Second Normal Form)	Must be in 1NF + no partial dependency on part of a composite key	Table order_items(order_id, product_id, product_name) → product_name depends only on product_id → move to Products table	
+3NF (Third Normal Form)	Must be in 2NF + no transitive dependency between non-key columns	Table employee(emp_id, emp_name, dept_id, dept_name) → dept_name depends on dept_id → move to Departments table	
+Denormalization	Introduce redundancy intentionally to improve read/query performance	Store customer_name in Orders table to avoid joins with Customers for faster reporting	"ALTER TABLE Orders
+ADD COLUMN customer_name VARCHAR(50);"
+			UPDATE Orders o
+			SET customer_name = (
+			    SELECT c.customer_name
+			    FROM Customers c
+			    WHERE c.customer_id = o.customer_id
+			);
+			
+Function to get current date			
+CURRENT_DATE	it gives year ,month and date(2025 08 20)		
+			
+Always put everything in group by which u mention in select column except tat agg function(max,sum)			
